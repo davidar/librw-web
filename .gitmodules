@@ -1,0 +1,6 @@
+[submodule "src/librw"]
+	path = src/librw
+	url = https://github.com/aap/librw.git
+[submodule "src/librwgta"]
+	path = src/librwgta
+	url = https://github.com/aap/librwgta.git
