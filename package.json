@@ -1,10 +1,12 @@
 {
   "name": "librw",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "WebAssembly build of librw, with TypeScript bindings",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build:em": "emmake make -C src PREFIX=$PWD/lib",
     "build:ts": "tsc",
