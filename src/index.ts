@@ -116,11 +116,11 @@ export class Stream extends CObject {}
 
 export class StreamMemory extends Stream {
   private data: number | null;
-  constructor(buf: ArrayBuffer) {
+  constructor(buf: Uint8Array) {
     super(M._rw_StreamMemory_new());
     const size = buf.byteLength;
     this.data = M._malloc(size);
-    M.HEAPU8.set(new Uint8Array(buf), this.data);
+    M.HEAPU8.set(buf, this.data);
     M._rw_StreamMemory_open(this.ptr, this.data, size);
   }
   delete() {
