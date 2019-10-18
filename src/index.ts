@@ -238,7 +238,13 @@ enum Format {
   AUTOMIPMAP = 0x1000,
   PAL8       = 0x2000,
   PAL4       = 0x4000,
-  MIPMAP     = 0x8000
+  MIPMAP     = 0x8000,
+
+  D3DFMT_DXT1 = 0x31545844,
+  D3DFMT_DXT2 = 0x32545844,
+  D3DFMT_DXT3 = 0x33545844,
+  D3DFMT_DXT4 = 0x34545844,
+  D3DFMT_DXT5 = 0x35545844,
 }
 
 export class Raster extends CObject {
@@ -249,8 +255,56 @@ export class Raster extends CObject {
   get format(): Format {
     return M._rw_Raster_format(this.ptr);
   }
+  get platform(): Platform {
+    return M._rw_Raster_platform(this.ptr);
+  }
   toImage() {
     return new Image(M._rw_Raster_toImage(this.ptr));
+  }
+  toD3dRaster() {
+    return new D3dRaster(M._rw_Raster_d3d(this.ptr));
+  }
+}
+
+export class RasterLevels extends CObject {
+  get length(): number {
+    return M._rw_RasterLevels_numlevels(this.ptr);
+  }
+  get format(): Format {
+    return M._rw_RasterLevels_format(this.ptr);
+  }
+  level(i: number) {
+    return new RasterLevel(M._rw_RasterLevels_levels(this.ptr, i));
+  }
+}
+
+export class RasterLevel extends CObject {
+  get width(): number {
+    return M._rw_RasterLevels_Level_width(this.ptr);
+  }
+  get height(): number {
+    return M._rw_RasterLevels_Level_height(this.ptr);
+  }
+  get size(): number {
+    return M._rw_RasterLevels_Level_size(this.ptr);
+  }
+  get data() {
+    return CObject.uint8Array(M._rw_RasterLevels_Level_data(this.ptr), this.size);
+  }
+}
+
+export class D3dRaster extends CObject {
+  get texture(): RasterLevels {
+    return new RasterLevels(M._rw_d3d_D3dRaster_texture(this.ptr));
+  }
+  get format(): Format {
+    return M._rw_d3d_D3dRaster_format(this.ptr);
+  }
+  get hasAlpha() {
+    return M._rw_d3d_D3dRaster_hasAlpha(this.ptr) !== 0;
+  }
+  get customFormat() {
+    return M._rw_d3d_D3dRaster_customFormat(this.ptr) !== 0;
   }
 }
 

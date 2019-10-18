@@ -72,6 +72,17 @@ A bool rw_Raster_formatHasAlpha(rw::Raster::Format f)
     { return rw::Raster::formatHasAlpha(f); }
 A rw::Image *rw_Raster_toImage(rw::Raster *self) { return self->toImage(); }
 A int32_t rw_Raster_format(rw::Raster *self) { return self->format; }
+A int32_t rw_Raster_platform(rw::Raster *self) { return self->platform; }
+A rw::d3d::D3dRaster *rw_Raster_d3d(rw::Raster *r) { return PLUGINOFFSET(rw::d3d::D3dRaster, r, rw::d3d::nativeRasterOffset); }
+
+A int32_t rw_RasterLevels_numlevels(rw::RasterLevels *self) { return self->numlevels; }
+A uint32_t rw_RasterLevels_format(rw::RasterLevels *self) { return self->format; }
+A rw::RasterLevels::Level *rw_RasterLevels_levels(rw::RasterLevels *self, int i) { return &self->levels[i]; }
+
+A int32_t rw_RasterLevels_Level_width(rw::RasterLevels::Level *self) { return self->width; }
+A int32_t rw_RasterLevels_Level_height(rw::RasterLevels::Level *self) { return self->height; }
+A int32_t rw_RasterLevels_Level_size(rw::RasterLevels::Level *self) { return self->size; }
+A uint8_t *rw_RasterLevels_Level_data(rw::RasterLevels::Level *self) { return self->data; }
 
 A rw::StreamMemory *rw_StreamMemory_new() { return new rw::StreamMemory(); }
 A rw::StreamMemory *rw_StreamMemory_open(rw::StreamMemory *self, uint8_t *data, uint32_t length, uint32_t capacity)
@@ -105,6 +116,11 @@ A rw::Texture::Addressing rw_Texture_getAddressV(rw::Texture *self)
 
 A rw::UVAnimDictionary *rw_UVAnimDictionary_streamRead(rw::Stream *s)
     { return rw::UVAnimDictionary::streamRead(s); }
+
+A void *rw_d3d_D3dRaster_texture(rw::d3d::D3dRaster *self) { return self->texture; }
+A uint32_t rw_d3d_D3dRaster_format(rw::d3d::D3dRaster *self) { return self->format; }
+A bool rw_d3d_D3dRaster_hasAlpha(rw::d3d::D3dRaster *self) { return self->hasAlpha; }
+A bool rw_d3d_D3dRaster_customFormat(rw::d3d::D3dRaster *self) { return self->customFormat; }
 
 A void gta_attachPlugins() { gta::attachPlugins(); }
 A char *gta_getNodeName(rw::Frame *f) { return gta::getNodeName(f); }
