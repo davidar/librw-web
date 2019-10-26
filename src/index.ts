@@ -43,6 +43,11 @@ export class CObject {
     let i = ptr / 2;
     return M.HEAPU16.subarray(i, i + length);
   }
+  static uint32Array(ptr: number, length: number): Uint32Array | null {
+    if (!ptr) return null;
+    let i = ptr / 4;
+    return M.HEAPU32.subarray(i, i + length);
+  }
   static float32Array(ptr: number, length: number): Float32Array | null {
     if (!ptr) return null;
     let i = ptr / 4;
@@ -341,9 +346,77 @@ export class UVAnimDictionary extends CObject {
   static streamRead(stream: Stream) {
     return new UVAnimDictionary(M._rw_UVAnimDictionary_streamRead(stream.ptr));
   }
-  static set current(d: UVAnimDictionary) {
+  static set current(d: UVAnimDictionary | null) {
     let p = (d === null) ? 0 : d.ptr;
     M._rw_currentUVAnimDictionary_set(p);
+  }
+  get animations() {
+    return new LinkList(M._rw_UVAnimDictionary_animations(this.ptr));
+  }
+  delete() {
+    M._rw_UVAnimDictionary_destroy(this.ptr);
+    super.delete();
+  }
+}
+
+export class UVAnimDictEntry extends CObject {
+  static fromDict(lnk: LLLink) {
+    return new UVAnimDictEntry(M._rw_UVAnimDictEntry_fromDict(lnk.ptr));
+  }
+  get anim() {
+    return new Animation(M._rw_UVAnimDictEntry_anim(this.ptr));
+  }
+}
+
+export class Animation extends CObject {
+  get duration(): number {
+    return M._rw_Animation_duration(this.ptr);
+  }
+  get numFrames(): number {
+    return M._rw_Animation_numFrames(this.ptr);
+  }
+  get numNodes(): number {
+    return M._rw_Animation_getNumNodes(this.ptr);
+  }
+  get uv() {
+    return new UVAnimCustomData(M._rw_UVAnimCustomData_get(this.ptr));
+  }
+  frame(i: number) {
+    return new UVAnimKeyFrame(M._rw_Animation_keyframes(this.ptr, i));
+  }
+}
+
+export class UVAnimKeyFrame extends CObject {
+  get time(): number {
+    return M._rw_UVAnimKeyFrame_time(this.ptr);
+  }
+  get uv() {
+    return CObject.float32Array(M._rw_UVAnimKeyFrame_uv(this.ptr), 6);
+  }
+  get prev() {
+    return new UVAnimKeyFrame(M._rw_UVAnimKeyFrame_prev(this.ptr));
+  }
+}
+
+export class UVAnimCustomData extends CObject {
+  get name() {
+    return CObject.string(M._rw_UVAnimCustomData_name(this.ptr));
+  }
+  get channels() {
+    return CObject.uint32Array(M._rw_UVAnimCustomData_nodeToUVChannel(this.ptr), 8);
+  }
+}
+
+export class UVAnim extends CObject {
+  interp(i: number) {
+    const p: number = M._rw_UVAnim_interp(this.ptr, i);
+    return p ? new AnimInterpolator(p) : null;
+  }
+}
+
+export class AnimInterpolator extends CObject {
+  get currentAnim() {
+    return new Animation(M._rw_AnimInterpolator_currentAnim(this.ptr));
   }
 }
 
@@ -452,6 +525,9 @@ export class Material extends CObject {
   }
   get surfaceProps() {
     return new SurfaceProperties(M._rw_Material_surfaceProps(this.ptr));
+  }
+  get uvAnim() {
+    return new UVAnim(M._rw_Material_uvAnim(this.ptr));
   }
 }
 

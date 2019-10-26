@@ -11,6 +11,14 @@ A void rw_platform_set(rw::Platform p) { rw::platform = p; }
 A bool rw_readChunkHeaderInfo(rw::Stream *s, rw::ChunkHeaderInfo *h)
     { return rw::readChunkHeaderInfo(s, h); }
 
+A float rw_Animation_duration(rw::Animation *self) { return self->duration; }
+A int32_t rw_Animation_numFrames(rw::Animation *self) { return self->numFrames; }
+A rw::UVAnimKeyFrame *rw_Animation_keyframes(rw::Animation *self, int i)
+    { return &((rw::UVAnimKeyFrame*)self->keyframes)[i]; }
+A int32_t rw_Animation_getNumNodes(rw::Animation *self) { return self->getNumNodes(); }
+
+A rw::Animation *rw_AnimInterpolator_currentAnim(rw::AnimInterpolator *self) { return self->currentAnim; }
+
 A rw::Atomic *rw_Atomic_fromClump(rw::LLLink *lnk) { return rw::Atomic::fromClump(lnk); }
 A rw::Frame *rw_Atomic_getFrame(rw::Atomic *self) { return self->getFrame(); }
 A rw::Geometry *rw_Atomic_geometry(rw::Atomic *self) { return self->geometry; }
@@ -54,6 +62,8 @@ A rw::Texture *rw_Material_texture(rw::Material *self) { return self->texture; }
 A rw::RGBA *rw_Material_color(rw::Material *self) { return &self->color; }
 A rw::SurfaceProperties *rw_Material_surfaceProps(rw::Material *self)
     { return &self->surfaceProps; }
+A rw::UVAnim *rw_Material_uvAnim(rw::Material *mat)
+    { return PLUGINOFFSET(rw::UVAnim, mat, rw::uvAnimOffset); }
 
 A uint32_t rw_Mesh_numIndices(rw::Mesh *self) { return self->numIndices; }
 A uint16_t *rw_Mesh_indices(rw::Mesh *self) { return self->indices; }
@@ -114,8 +124,24 @@ A rw::Texture::Addressing rw_Texture_getAddressU(rw::Texture *self)
 A rw::Texture::Addressing rw_Texture_getAddressV(rw::Texture *self)
     { return self->getAddressV(); }
 
+A rw::AnimInterpolator *rw_UVAnim_interp(rw::UVAnim *self, int i) { return self->interp[i]; }
+
+A rw::UVAnimCustomData *rw_UVAnimCustomData_get(rw::Animation *anim) { return rw::UVAnimCustomData::get(anim); }
+A char *rw_UVAnimCustomData_name(rw::UVAnimCustomData *self) { return self->name; }
+A int32_t *rw_UVAnimCustomData_nodeToUVChannel(rw::UVAnimCustomData *self)
+    { return self->nodeToUVChannel; }
+
+A rw::UVAnimDictEntry *rw_UVAnimDictEntry_fromDict(rw::LLLink *lnk) { return rw::UVAnimDictEntry::fromDict(lnk); }
+A rw::Animation *rw_UVAnimDictEntry_anim(rw::UVAnimDictEntry *self) { return self->anim; }
+
 A rw::UVAnimDictionary *rw_UVAnimDictionary_streamRead(rw::Stream *s)
     { return rw::UVAnimDictionary::streamRead(s); }
+A rw::LinkList *rw_UVAnimDictionary_animations(rw::UVAnimDictionary *self) { return &self->animations; }
+A void rw_UVAnimDictionary_destroy(rw::UVAnimDictionary *self) { self->destroy(); }
+
+A float rw_UVAnimKeyFrame_time(rw::UVAnimKeyFrame *self) { return self->time; }
+A float *rw_UVAnimKeyFrame_uv(rw::UVAnimKeyFrame *self) { return self->uv; }
+A rw::UVAnimKeyFrame *rw_UVAnimKeyFrame_prev(rw::UVAnimKeyFrame *self) { return self->prev; };
 
 A void *rw_d3d_D3dRaster_texture(rw::d3d::D3dRaster *self) { return self->texture; }
 A uint32_t rw_d3d_D3dRaster_format(rw::d3d::D3dRaster *self) { return self->format; }
